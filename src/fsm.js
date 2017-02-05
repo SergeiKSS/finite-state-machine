@@ -3,8 +3,10 @@ class FSM {
      * Creates new FSM instance.
      * @param config
      */
-   constructor(config) {
-        var stackfsm = [];
+    constructor(config) {
+        var stackfsm = [],
+            stackundo = [];
+        this.stackundo = [null];    
         this.config = config;
         if (this.config == undefined){
             throw new Error('config = undefined');
@@ -12,11 +14,12 @@ class FSM {
          this.stackfsm = [null];
          this.stackfsm.push(this.config.initial);
     }
+
     /**
      * Returns active state.
      * @returns {String}
      */
-   getState() {
+    getState() {
         return this.stackfsm[this.stackfsm.length-1];
     }
 
@@ -25,8 +28,9 @@ class FSM {
      * @param state
      */
     changeState(state) {
-        for (var key in config.states){
+        for (var key in this.config.states){
             if (key == state){
+                this.stackfsm.push(null);
                 this.stackfsm.push(state);
                 return true;
                 };
@@ -39,7 +43,7 @@ class FSM {
      * @param event
      */
     trigger(event) {
-       var count = 0;
+        var count = 0;
         for (var key in this.config.states[this.stackfsm[this.stackfsm.length-1]].transitions){
             if (key == event){
                 this.stackfsm.push(key);
@@ -57,7 +61,7 @@ class FSM {
      * Resets FSM state to initial.
      */
     reset() {
-    	this.stackfsm.length = 2;
+        this.stackfsm.length = 2;
     }
 
     /**
@@ -69,18 +73,20 @@ class FSM {
     getStates(event) {
         var st = [];
         if (event == undefined){
-            for (var key in config.states){
+            for (var key in this.config.states){
                 st.push(String(key));
            };
+           st="['"+st.join("', '")+"']";
            return st; 
         };
-        for (var key in config.states){
-            for (var key2 in config.states[key].transitions){
+        for (var key in this.config.states){
+            for (var key2 in this.config.states[key].transitions){
                 if (key2 == event){
                     st.push(String(key));
                 };
             };   
         };
+        st="['"+st.join("', '")+"']";       
         return st;
        
     }
@@ -90,7 +96,20 @@ class FSM {
      * Returns false if undo is not available.
      * @returns {Boolean}
      */
-    undo() {}
+    undo() {
+
+        if (this.stackfsm.length == 2){
+            return false;
+        }
+
+        this.stackundo.push(this.stackfsm[this.stackfsm.length-1]); 
+        this.stackfsm.length=this.stackfsm.length-1;
+        this.stackundo.push(this.stackfsm[this.stackfsm.length-1]); 
+        this.stackfsm.length=this.stackfsm.length-1;
+
+        return true;
+        
+   }
 
     /**
      * Goes redo to state.
