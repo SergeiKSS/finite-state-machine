@@ -80,8 +80,7 @@ class FSM {
             for (var key in this.config.states){
                 st.push(String(key));
            };
-           st="['"+st.join("', '")+"']";
-           return st; 
+        return st; 
         };
         for (var key in this.config.states){
             for (var key2 in this.config.states[key].transitions){
@@ -90,7 +89,6 @@ class FSM {
                 };
             };   
         };
-        st="['"+st.join("', '")+"']";       
         return st;
        
     }
