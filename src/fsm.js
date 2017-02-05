@@ -32,6 +32,7 @@ class FSM {
             if (key == state){
                 this.stackfsm.push(null);
                 this.stackfsm.push(state);
+                this.stackundo.length = 1;
                 return true;
                 };
             };   
@@ -48,6 +49,9 @@ class FSM {
             if (key == event){
                 this.stackfsm.push(key);
                 this.stackfsm.push(this.config.states[this.stackfsm[this.stackfsm.length-2]].transitions[key]);
+                if (this.stackundo.length > 1) {
+                    this.stackundo.length=this.stackundo.length-2;   
+                }
                 count++;
             };
         };
@@ -117,21 +121,24 @@ class FSM {
      * @returns {Boolean}
      */
     redo() {
-    	 if (this.stackundo.length == 1){
+        if (this.stackundo.length == 1){
             return false;
         }
         this.stackfsm.push(this.stackundo[this.stackundo.length-1]); 
         this.stackundo.length=this.stackundo.length-1;
         this.stackfsm.push(this.stackundo[this.stackundo.length-1]); 
-        this.stackundo.length=this.stackundo.length-1;   
-
-        return true;
+        this.stackundo.length=this.stackundo.length-1;
+       
+        return true;     
     }
 
     /**
      * Clears transition history
      */
-    clearHistory() {}
+    clearHistory() {
+        this.stackfsm.length = 2;
+        this.stackundo.length = 1;
+    }
 }
 
 module.exports = FSM;
