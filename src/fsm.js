@@ -52,11 +52,13 @@ class FSM {
         };
                        
     }
-    
+
     /**
      * Resets FSM state to initial.
      */
-    reset() {}
+    reset() {
+    	this.stackfsm.length = 2;
+    }
 
     /**
      * Returns an array of states for which there are specified event transition rules.
@@ -65,7 +67,7 @@ class FSM {
      * @returns {Array}
      */
     getStates(event) {
-        var st = [], n;
+        var st = [];
         if (event == undefined){
             for (var key in config.states){
                 st.push(String(key));
