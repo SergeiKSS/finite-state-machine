@@ -116,7 +116,17 @@ class FSM {
      * Returns false if redo is not available.
      * @returns {Boolean}
      */
-    redo() {}
+    redo() {
+    	 if (this.stackundo.length == 1){
+            return false;
+        }
+        this.stackfsm.push(this.stackundo[this.stackundo.length-1]); 
+        this.stackundo.length=this.stackundo.length-1;
+        this.stackfsm.push(this.stackundo[this.stackundo.length-1]); 
+        this.stackundo.length=this.stackundo.length-1;   
+
+        return true;
+    }
 
     /**
      * Clears transition history
