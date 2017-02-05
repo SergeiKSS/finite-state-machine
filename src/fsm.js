@@ -3,13 +3,22 @@ class FSM {
      * Creates new FSM instance.
      * @param config
      */
-    constructor(config) {}
-
+    constructor(config) {
+       var stackfsm = [];
+        this.config = config;
+        if (this.config == undefined){
+            throw new Error('config = undefined')
+        };
+         this.stackfsm = [null];
+         this.stackfsm.push(this.config.initial);
+    }
     /**
      * Returns active state.
      * @returns {String}
      */
-    getState() {}
+    getState() {
+        return this.stackfsm[this.stackfsm.length-1];
+    }
 
     /**
      * Goes to specified state.
